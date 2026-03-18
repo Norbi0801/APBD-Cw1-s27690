@@ -10,17 +10,17 @@ public class Rental : BaseEntity
     public required Device Device { get; set; }
     public DateTime StartRentalDateTime { get; set; }
     public DateTime DueDateTime { get; set; }
-    public DateTime ReturnDateTime { get; set; }
+    public DateTime? ReturnDateTime { get; set; }
     public Money ReturnFee { get; set; }
     public Money LateFee { get; set; }
 
-    public Boolean IsTimelyReturned()
+    public bool IsReturned()
     {
-        return ReturnDateTime > DueDateTime;
+        return ReturnDateTime.HasValue;
     }
-    
-    public Boolean IsReturned()
+
+    public bool IsTimelyReturned()
     {
-        return ReturnDateTime > StartRentalDateTime;
+        return IsReturned() && ReturnDateTime!.Value <= DueDateTime;
     }
 }

@@ -64,13 +64,14 @@ public class RentalService : BaseService<Rental>, IRentalChecker
             throw new InvalidOperationException("Rental already returned");
 
         rental.ReturnDateTime = DateTime.Now;
+        var returnDate = rental.ReturnDateTime!.Value;
 
-        var totalDays = (rental.ReturnDateTime - rental.StartRentalDateTime).Days;
+        var totalDays = (returnDate - rental.StartRentalDateTime).Days;
         rental.ReturnFee = new Money(totalDays * _policy.BaseFeePerDay);
 
         if (!rental.IsTimelyReturned())
         {
-            var overdueDays = (rental.ReturnDateTime - rental.DueDateTime).Days;
+            var overdueDays = (returnDate - rental.DueDateTime).Days;
             rental.LateFee = new Money(overdueDays * _policy.LateFeePerDay);
         }
 
