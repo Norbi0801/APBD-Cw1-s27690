@@ -2,5 +2,5 @@ namespace RentItEq.Models;
 
 public abstract class BaseEntity
 {
-    public Guid Uuid { get; init; } = Guid.NewGuid();
+    public Guid Uuid { get; } = Guid.NewGuid();
 }
