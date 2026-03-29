@@ -1,28 +1,35 @@
 namespace RentItEq.Components;
 
-public static class Display
+public class Display
 {
-    public static void Header(string title)
+    private readonly IConsole _console;
+
+    public Display(IConsole console)
     {
-        Console.WriteLine($"\n--- {title} ---");
+        _console = console;
     }
 
-    public static void Success(string message)
+    public void Header(string title)
     {
-        Console.WriteLine($"[OK] {message}");
+        _console.WriteLine($"\n--- {title} ---");
     }
 
-    public static void Error(string message)
+    public void Success(string message)
     {
-        Console.WriteLine($"[ERROR] {message}");
+        _console.WriteLine($"[OK] {message}");
     }
 
-    public static void Info(string message)
+    public void Error(string message)
     {
-        Console.WriteLine($"[INFO] {message}");
+        _console.WriteLine($"[ERROR] {message}");
     }
 
-    public static void ListItems<T>(IEnumerable<T> items, Func<T, string> formatter, string emptyMessage = "No items.")
+    public void Info(string message)
+    {
+        _console.WriteLine($"[INFO] {message}");
+    }
+
+    public void ListItems<T>(IEnumerable<T> items, Func<T, string> formatter, string emptyMessage = "No items.")
     {
         var list = items.ToList();
         if (list.Count == 0)
@@ -32,6 +39,6 @@ public static class Display
         }
 
         foreach (var item in list)
-            Console.WriteLine($"  {formatter(item)}");
+            _console.WriteLine($"  {formatter(item)}");
     }
 }

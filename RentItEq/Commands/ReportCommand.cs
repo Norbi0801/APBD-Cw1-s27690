@@ -8,19 +8,21 @@ public class ReportCommand : ICommand
     private readonly DeviceService _deviceService;
     private readonly UserService _userService;
     private readonly RentalService _rentalService;
+    private readonly Display _display;
 
     public string Name => "Report";
 
-    public ReportCommand(DeviceService deviceService, UserService userService, RentalService rentalService)
+    public ReportCommand(DeviceService deviceService, UserService userService, RentalService rentalService, Display display)
     {
         _deviceService = deviceService;
         _userService = userService;
         _rentalService = rentalService;
+        _display = display;
     }
 
     public void Execute()
     {
-        Display.Header("Rental System Report");
+        _display.Header("Rental System Report");
 
         var allDevices = _deviceService.GetDeviceList();
         var availableDevices = _deviceService.GetAvailableDevices();
@@ -30,10 +32,10 @@ public class ReportCommand : ICommand
         var users = _userService.GetUserList();
         var totalFees = allRentals.Sum(r => r.ReturnFee.Amount + r.LateFee.Amount);
 
-        Console.WriteLine($"  Devices:          {allDevices.Count} total, {availableDevices.Count} available");
-        Console.WriteLine($"  Users:            {users.Count}");
-        Console.WriteLine($"  Rentals:          {allRentals.Count} total, {activeRentals.Count} active");
-        Console.WriteLine($"  Overdue:          {overdueRentals.Count}");
-        Console.WriteLine($"  Total fees:       {totalFees:N2} PLN");
+        _display.Info($"Devices:          {allDevices.Count} total, {availableDevices.Count} available");
+        _display.Info($"Users:            {users.Count}");
+        _display.Info($"Rentals:          {allRentals.Count} total, {activeRentals.Count} active");
+        _display.Info($"Overdue:          {overdueRentals.Count}");
+        _display.Info($"Total fees:       {totalFees:N2} PLN");
     }
 }

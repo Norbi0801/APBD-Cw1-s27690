@@ -1,109 +1,118 @@
 namespace RentItEq.Components;
 
-public static class Input
+public class Input
 {
-    public static string ReadString(string label)
+    private readonly IConsole _console;
+    private readonly Display _display;
+
+    public Input(IConsole console, Display display)
     {
-        Console.Write($"{label}: ");
-        return Console.ReadLine()?.Trim() ?? "";
+        _console = console;
+        _display = display;
     }
 
-    public static string? ReadOptional(string label)
+    public string ReadString(string label)
     {
-        Console.Write($"{label} (optional): ");
-        var value = Console.ReadLine()?.Trim();
+        _console.Write($"{label}: ");
+        return _console.ReadLine()?.Trim() ?? "";
+    }
+
+    public string? ReadOptional(string label)
+    {
+        _console.Write($"{label} (optional): ");
+        var value = _console.ReadLine()?.Trim();
         return string.IsNullOrEmpty(value) ? null : value;
     }
 
-    public static int ReadInt(string label)
+    public int ReadInt(string label)
     {
         while (true)
         {
-            Console.Write($"{label}: ");
-            if (int.TryParse(Console.ReadLine()?.Trim(), out var result))
+            _console.Write($"{label}: ");
+            if (int.TryParse(_console.ReadLine()?.Trim(), out var result))
                 return result;
-            Display.Error("Invalid number. Try again.");
+            _display.Error("Invalid number. Try again.");
         }
     }
 
-    public static int ReadInt(string label, int defaultValue)
+    public int ReadInt(string label, int defaultValue)
     {
-        Console.Write($"{label} (default {defaultValue}): ");
-        var input = Console.ReadLine()?.Trim();
+        _console.Write($"{label} (default {defaultValue}): ");
+        var input = _console.ReadLine()?.Trim();
         if (string.IsNullOrEmpty(input)) return defaultValue;
         if (int.TryParse(input, out var result)) return result;
-        Display.Error($"Invalid number, using default ({defaultValue}).");
+        _display.Error($"Invalid number, using default ({defaultValue}).");
         return defaultValue;
     }
 
-    public static double ReadDouble(string label)
+    public double ReadDouble(string label)
     {
         while (true)
         {
-            Console.Write($"{label}: ");
-            if (double.TryParse(Console.ReadLine()?.Trim(), out var result))
+            _console.Write($"{label}: ");
+            if (double.TryParse(_console.ReadLine()?.Trim(), out var result))
                 return result;
-            Display.Error("Invalid number. Try again.");
+            _display.Error("Invalid number. Try again.");
         }
     }
 
-    public static Guid ReadGuid(string label)
+    public Guid ReadGuid(string label)
     {
         while (true)
         {
-            Console.Write($"{label}: ");
-            if (Guid.TryParse(Console.ReadLine()?.Trim(), out var result))
+            _console.Write($"{label}: ");
+            if (Guid.TryParse(_console.ReadLine()?.Trim(), out var result))
                 return result;
-            Display.Error("Invalid UUID. Try again.");
+            _display.Error("Invalid UUID. Try again.");
         }
     }
 
-    public static T ReadEnum<T>(string label) where T : struct, Enum
+    public T ReadEnum<T>(string label) where T : struct, Enum
     {
         var values = Enum.GetValues<T>();
-        Console.WriteLine(label);
+        _console.WriteLine(label);
         for (var i = 0; i < values.Length; i++)
-            Console.WriteLine($"  {i + 1}. {values[i]}");
+            _console.WriteLine($"  {i + 1}. {values[i]}");
 
         while (true)
         {
-            Console.Write("> ");
-            if (int.TryParse(Console.ReadLine()?.Trim(), out var choice) && choice >= 1 && choice <= values.Length)
+            _console.Write("> ");
+            if (int.TryParse(_console.ReadLine()?.Trim(), out var choice) && choice >= 1 && choice <= values.Length)
                 return values[choice - 1];
-            Display.Error("Invalid choice. Try again.");
+            _display.Error("Invalid choice. Try again.");
         }
     }
 
-    public static string ReadChoice(string label, params string[] options)
+    public string ReadChoice(string label, params string[] options)
     {
-        Console.WriteLine(label);
+        _console.WriteLine(label);
         for (var i = 0; i < options.Length; i++)
-            Console.WriteLine($"  {i + 1}. {options[i]}");
+            _console.WriteLine($"  {i + 1}. {options[i]}");
 
         while (true)
         {
-            Console.Write("> ");
-            if (int.TryParse(Console.ReadLine()?.Trim(), out var choice) && choice >= 1 && choice <= options.Length)
+            _console.Write("> ");
+            if (int.TryParse(_console.ReadLine()?.Trim(), out var choice) && choice >= 1 && choice <= options.Length)
                 return options[choice - 1].ToLower();
-            Display.Error("Invalid choice. Try again.");
+            _display.Error("Invalid choice. Try again.");
         }
     }
 
-    public static T Select<T>(string label, List<T> items, Func<T, string> formatter)
+    public T Select<T>(string label, List<T> items, Func<T, string> formatter)
     {
         if (items.Count == 0)
             throw new InvalidOperationException("No items to select from.");
 
-        Console.WriteLine(label);
+        _console.WriteLine(label);
         for (var i = 0; i < items.Count; i++)
-            Console.WriteLine($"  {i + 1}. {formatter(items[i])}");
+            _console.WriteLine($"  {i + 1}. {formatter(items[i])}");
 
         while (true)
         {
-            Console.Write("> ");
-            if (int.TryParse(Console.ReadLine()?.Trim(), out var choice) && choice >= 1 && choice <= items.Count)
+            _console.Write("> ");
+            if (int.TryParse(_console.ReadLine()?.Trim(), out var choice) && choice >= 1 && choice <= items.Count)
                 return items[choice - 1];
-            Display.Error("Invalid choice. Try again.");
+            _display.Error("Invalid choice. Try again.");
         }
     }
 }

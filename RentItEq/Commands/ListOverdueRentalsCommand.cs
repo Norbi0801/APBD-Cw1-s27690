@@ -6,18 +6,20 @@ namespace RentItEq.Commands;
 public class ListOverdueRentalsCommand : ICommand
 {
     private readonly RentalService _rentalService;
+    private readonly Display _display;
 
     public string Name => "ListOverdueRentals";
 
-    public ListOverdueRentalsCommand(RentalService rentalService)
+    public ListOverdueRentalsCommand(RentalService rentalService, Display display)
     {
         _rentalService = rentalService;
+        _display = display;
     }
 
     public void Execute()
     {
-        Display.Header("Overdue Rentals");
-        Display.ListItems(
+        _display.Header("Overdue Rentals");
+        _display.ListItems(
             _rentalService.GetOverdueRentals(),
             r =>
             {

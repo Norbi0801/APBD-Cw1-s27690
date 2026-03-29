@@ -6,18 +6,20 @@ namespace RentItEq.Commands;
 public class ListRentalsCommand : ICommand
 {
     private readonly RentalService _rentalService;
+    private readonly Display _display;
 
     public string Name => "ListRentals";
 
-    public ListRentalsCommand(RentalService rentalService)
+    public ListRentalsCommand(RentalService rentalService, Display display)
     {
         _rentalService = rentalService;
+        _display = display;
     }
 
     public void Execute()
     {
-        Display.Header("All Rentals");
-        Display.ListItems(
+        _display.Header("All Rentals");
+        _display.ListItems(
             _rentalService.GetAllRentals(),
             r =>
             {
